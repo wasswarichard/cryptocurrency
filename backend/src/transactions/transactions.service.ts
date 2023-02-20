@@ -3,7 +3,7 @@ import { Transaction } from './transaction.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class TransactionsService {
@@ -92,8 +92,4 @@ export class TransactionsService {
     });
   }
 
-  @OnEvent('transaction.created')
-  async publishTransaction(transaction) {
-    console.log(transaction);
-  }
 }

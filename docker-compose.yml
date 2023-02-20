@@ -1,0 +1,30 @@
+version: "3"
+services:
+  frontend:
+    build: frontend
+    depends_on:
+      - api
+    tty: true
+    volumes:
+      - ./frontend/:/frontend
+      - frontend/node_modules
+    ports:
+      - "5173:5173"
+  api:
+    build: backend
+    depends_on:
+      - database
+    tty: true
+    volumes:
+      - ./backend/:/backend
+      - /backend/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - BACKEND_URL:http://api.coinlayer.com/api
+      - BACKEND_URL_ACCESS_TOKEN:8ef6e8e48da3386e612131d5ec0c0b78
+      - DATABASE_URL:mongodb://127.0.0.1:27017/cryptocurrency
+  database:
+    image: mongo:4.4
+    ports:
+      - "27017:27017"

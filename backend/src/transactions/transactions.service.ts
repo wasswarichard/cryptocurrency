@@ -3,17 +3,14 @@ import { Transaction } from './transaction.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { WebSocketServer } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class TransactionsService {
-  // @WebSocketServer()
-  // server: Server;
-
   constructor(
     @InjectModel('Transaction')
     private readonly transactionModel: Model<Transaction>,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async insertTransaction(
@@ -33,8 +30,7 @@ export class TransactionsService {
       type,
     });
     const result = await transaction.save();
-    // this.server.emit('transaction', result);
-
+    this.eventEmitter.emit('transaction.created', result);
     return result.id as string;
   }
 
@@ -58,7 +54,7 @@ export class TransactionsService {
 
     return transaction;
   }
-  @Cron(CronExpression.EVERY_10_SECONDS, { name: 'fetch_live_transactions' })
+  @Cron(CronExpression.EVERY_2_HOURS, { name: 'fetch_live_transactions' })
   async fetchLiveTransactions() {
     const response = await fetch(
       `${process.env.BACKEND_URL}/live?access_key=${process.env.BACKEND_URL_ACCESS_KEY}&symbols=BTC,ETH,XRP`,
@@ -94,5 +90,10 @@ export class TransactionsService {
         type,
       );
     });
+  }
+
+  @OnEvent('transaction.created')
+  async publishTransaction(transaction) {
+    console.log(transaction);
   }
 }

@@ -4,6 +4,7 @@ import Transactions from './pages/Transactions/Transactions';
 import React, { FC } from 'react';
 
 export interface IRoutePathsProps {}
+
 const RoutePaths: FC<IRoutePathsProps> = () => {
    return (
       <Router>

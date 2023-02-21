@@ -12,6 +12,7 @@ export interface ITransaction {
    height: number;
    time: number;
 }
+
 export interface ITransactionModalProps {
    openModal: boolean;
    hash: string;
@@ -19,8 +20,11 @@ export interface ITransactionModalProps {
 }
 
 export interface ColumnConfig {
-   name: string;
+   id: string;
    label: string;
+   minWidth?: number;
+   align?: 'right';
+   format?: (value: number) => string;
 }
 
 export interface PaginatedResult<T> {

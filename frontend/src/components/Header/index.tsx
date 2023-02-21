@@ -11,9 +11,10 @@ const useStyles = makeStyles(() => ({
       display: 'flex',
       alignItems: 'center',
       height: '100%',
-      padding: '0 20px',
+      padding: '0 50px',
    },
 }));
+
 export interface IHeaderProps {}
 
 const Header: FC<IHeaderProps> = () => {
@@ -24,7 +25,7 @@ const Header: FC<IHeaderProps> = () => {
          <Grid container className={classes.headerContainer}>
             <Grid item xs={12}>
                <Typography variant="h4" data-testid="company-logo">
-                  Transactions
+                  Exchange
                </Typography>
             </Grid>
          </Grid>

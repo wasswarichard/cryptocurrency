@@ -19,6 +19,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 export interface IPageNotFound {}
+
 const PageNotFound: FC<IPageNotFound> = () => {
    const classes = useStyles();
 

@@ -6,6 +6,7 @@ import {
    TableCell,
    TableBody,
    TablePagination,
+   Typography,
 } from '@mui/material';
 
 import { makeStyles } from '@mui/styles';
@@ -77,15 +78,15 @@ const DataTable: FC<IDataTable> = ({
    return (
       <>
          <Grid item xs={12} className={classes.dataTableTitle}>
-            {title}
+            <Typography> {title}</Typography>
          </Grid>
          <Grid item xs={12} className={classes.dataTableContainer}>
             <Table stickyHeader>
                <TableHead>
                   <TableRow>
-                     {columns.map(({ name, label }: ColumnConfig) => (
+                     {columns.map(({ id, label }: ColumnConfig) => (
                         <TableCell
-                           key={name}
+                           key={id}
                            className={classnames(classes.dataTableCell, classes.dataTableHeadCell)}
                         >
                            <strong>{label}</strong>
@@ -97,9 +98,9 @@ const DataTable: FC<IDataTable> = ({
                   {data.map((rowData: any) => {
                      return (
                         <TableRow key={rowData[keyColumn]}>
-                           {columns.map(({ name }: ColumnConfig) => (
-                              <TableCell className={classes.dataTableCell} key={name}>
-                                 {rowData[name]}
+                           {columns.map(({ id }: ColumnConfig) => (
+                              <TableCell className={classes.dataTableCell} key={id}>
+                                 {rowData[id]}
                               </TableCell>
                            ))}
                         </TableRow>

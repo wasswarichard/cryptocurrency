@@ -9,7 +9,7 @@ services:
       - ./frontend/:/frontend
       - frontend/node_modules
     ports:
-      - "5173:5173"
+      - "3000:3000"
   api:
     build: backend
     depends_on:
@@ -19,7 +19,7 @@ services:
       - ./backend/:/backend
       - /backend/node_modules
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
       - BACKEND_URL:http://api.coinlayer.com/api
       - BACKEND_URL_ACCESS_TOKEN:8ef6e8e48da3386e612131d5ec0c0b78

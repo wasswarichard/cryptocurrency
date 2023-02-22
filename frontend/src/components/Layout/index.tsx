@@ -1,31 +1,19 @@
 import { Grid } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import Header from '../Header';
 import React, { FC } from 'react';
-
-const useStyles = makeStyles(() => ({
-   mainContainer: {
-      display: 'flex',
-   },
-   contentContainer: {
-      display: 'flex',
-      padding: '0 20px',
-   },
-}));
+import './index.sass';
 
 interface ILayout {
    children: JSX.Element;
 }
 
 const Layout: FC<ILayout> = ({ children }) => {
-   const classes = useStyles();
-
    return (
-      <Grid container className={classes.mainContainer}>
+      <Grid container className="mainContainer">
          <Grid item xs={12}>
             <Header />
          </Grid>
-         <Grid item xs={12} className={classes.contentContainer}>
+         <Grid item xs={12} className="contentContainer">
             {children}
          </Grid>
       </Grid>

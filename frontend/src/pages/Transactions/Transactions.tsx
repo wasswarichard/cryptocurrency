@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { ColumnConfig, ITransaction } from '../../interface/types';
+import { ColumnConfig } from '../../interface/types';
 import { DataTable } from '../../components';
-import { makeStyles } from '@mui/styles';
 import DragHandleSharpIcon from '@mui/icons-material/DragHandleSharp';
 import axios from 'axios';
+import io, { Socket } from 'socket.io-client';
+import './Transactions.sass';
 import {
    Grid,
    MenuItem,
@@ -14,24 +15,15 @@ import {
    InputAdornment,
    Button,
 } from '@mui/material';
-
-const useStyles = makeStyles(() => ({
-   inputs: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(6, 1fr)',
-      gridGap: '2rem',
-      marginTop: '1rem',
-      '@media (max-width: 650px)': {
-         gridTemplateColumns: '100%',
-      },
-   },
-   display: {
-      padding: '0 50px',
-   },
-}));
+import { DefaultEventsMap } from '@socket.io/component-emitter';
 
 const columns: ColumnConfig[] = [
-   { id: 'transactionDate', label: 'Date & Time', minWidth: 170 },
+   {
+      id: 'transactionDate',
+      label: 'Date & Time',
+      minWidth: 170,
+      format: (value: number) => new Date(value).toLocaleString(),
+   },
    { id: 'currencyFrom', label: 'Currency From', minWidth: 100 },
    {
       id: 'amount1',
@@ -71,35 +63,62 @@ const currencyOptions: readonly currencyOption[] = [
    },
 ];
 
+const backendUrl = 'http://localhost:3001';
+let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 const Transactions = () => {
-   const classes = useStyles();
    const [currencyFrom, setCurrencyFrom] = useState<string>('');
    const [currencyTo, setCurrencyTo] = useState<string>('USD');
+   const [amountToValue, setAmountToValue] = useState<string>('');
+   const [amountFromValue, setAmountFromValue] = useState<string>('');
    const [transactions, setTransactions] = useState<any>([]);
-   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-   const [page, setPage] = useState<number>(0);
 
-   // useEffect(() => {
-   //    (async () => {
-   //       const transactions = axios.get(`http://localhost:3001/transactions`);
-   //       console.log(transactions);
-   //    })();
-   // }, []);
+   useEffect(() => {
+      (async () => {
+         const transactions = await axios.get(`${backendUrl}/transactions`);
+         setTransactions(transactions.data);
+      })();
+      socket = io(backendUrl);
+      return () => {
+         socket.off();
+      };
+   }, []);
 
-   const handlePageChange = (event: unknown, newPage: number) => {
-      setPage(newPage);
-   };
+   useEffect(() => {
+      socket.on('transaction.created', (message) => {
+         console.log(message)
+         setTransactions((previousState: any) => {
+            return {
+               ...previousState,
+               ...[message]
+            };
+         });
+      });
+   }, []);
 
-   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setRowsPerPage(+event.target.value);
-      setPage(0);
+   useEffect(() => {
+      console.log(currencyFrom);
+   }, [currencyFrom]);
+
+   const handleOnChange = async () => {
+      try {
+         const response = await axios.post(`${backendUrl}/transactions`, {
+            transactionDate: Date.now().toString(),
+            currencyFrom,
+            amount1: amountFromValue,
+            currencyTo,
+            amount2: amountToValue,
+            type: 'EXCHANGED',
+         });
+      }catch (e){
+         console.log(e)
+      }
    };
 
    return (
       <React.Fragment>
-         <Grid container sx={{ mt: 3 }} className={classes.display}>
+         <Grid container sx={{ mt: 3 }} className="display">
             <Grid item xs={12} sm={9}>
-               <div className={classes.inputs}>
+               <div className="inputs">
                   <FormControl sx={{ maxWidth: 200, minWidth: 200 }}>
                      <Typography>Currency From</Typography>
                      <Select
@@ -121,7 +140,7 @@ const Transactions = () => {
                            <Typography>Amount</Typography>
                            <OutlinedInput
                               id="outlined-adornment-amount"
-                              startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                              onChange={(e) => setAmountFromValue(e.target.value)}
                            />
                         </Grid>
                         <Grid item xs={12} sm={3} sx={{ mt: 5 }}>
@@ -146,27 +165,30 @@ const Transactions = () => {
                      <OutlinedInput
                         id="outlined-adornment-amount"
                         startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                        onChange={(e) => setAmountToValue(e.target.value)}
                      />
                   </FormControl>
                   <FormControl sx={{ maxWidth: 150, mt: 4 }}>
-                     <Button variant="contained" fullWidth color="success" size="large">
+                     <Button
+                        variant="contained"
+                        fullWidth
+                        color="success"
+                        size="large"
+                        onClick={() => handleOnChange()}
+                     >
                         Save
                      </Button>
                   </FormControl>
                </div>
             </Grid>
 
-            <Grid item xs={12} sm={9} sx={{ mt: 3 }}>
+            <Grid item xs={12} sx={{ mt: 3, mb: 5 }}>
                <DataTable
                   columns={columns}
                   keyColumn="index"
                   title="History"
                   data={transactions}
                   totalItems={transactions.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handlePageChange}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
                />
             </Grid>
          </Grid>

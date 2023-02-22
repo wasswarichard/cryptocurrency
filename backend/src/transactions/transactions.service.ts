@@ -35,7 +35,10 @@ export class TransactionsService {
   }
 
   async getTransactions() {
-    return this.transactionModel.find().exec();
+    const result = await this.transactionModel.find().exec();
+    return result.sort(function (a, b) {
+      return parseFloat(b.transactionDate) - parseFloat(a.transactionDate);
+    });
   }
 
   async getSingleTransaction(transactionId: string) {

@@ -1,22 +1,8 @@
 import React from 'react';
 import { Breadcrumbs, Typography } from '@mui/material/';
-import { makeStyles } from '@mui/styles';
 import { NavigateNext } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
-import { themeVariables } from '../../utils/theme';
-
-const useStyles = makeStyles(() => ({
-   breadcrumbs: {
-      '& a': {
-         textDecoration: 'none',
-         color: themeVariables.colors.lightGray,
-
-         '&:hover': {
-            color: themeVariables.colors.gray,
-         },
-      },
-   },
-}));
+import './index.sass';
 
 interface Breadcrumb {
    label: string;
@@ -28,10 +14,8 @@ interface Props {
 }
 
 const BreadcrumbsWrapper = ({ data }: Props) => {
-   const classes = useStyles();
-
    return (
-      <Breadcrumbs separator={<NavigateNext fontSize="small" />} className={classes.breadcrumbs}>
+      <Breadcrumbs separator={<NavigateNext fontSize="small" />} className="breadcrumbs">
          {data.map(({ label, navigateTo }: Breadcrumb, index: number) => (
             <Link to={navigateTo} key={label}>
                <Typography

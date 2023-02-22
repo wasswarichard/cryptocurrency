@@ -7,3 +7,13 @@ $fontFamily: 'Lato', helvetica, Arial, Sans-serif
   width: 100%
   margin: 30px auto 30px auto
 
+.inputs
+  display: grid
+  grid-template-columns: repeat(6, 1fr)
+  grid-gap: 2rem
+  margin-top: 1rem
+  @media (max-width: 650px)
+    grid-template-columns: 100%
+.display
+  padding: 0 30px 20px
+

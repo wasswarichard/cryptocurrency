@@ -5,3 +5,4 @@ export { default as DataTable } from './DataTable';
 export { default as ErrorMessage } from './ErrorMessage';
 export { default as PageNotFound } from './PageNotFound';
 export { default as Breadcrumbs } from './Breadcrumbs';
+export { default as TablePagination } from './TablePagination';

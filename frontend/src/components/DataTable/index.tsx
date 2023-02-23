@@ -15,7 +15,6 @@ interface IDataTable {
 const DataTable: FC<IDataTable> = ({ columns, keyColumn, title, data, totalItems }) => {
    const [displayData, setDisplayData] = useState<any>([]);
    const [page, setPage] = useState<number>(0);
-   console.log(data);
 
    useEffect(() => {
       (async () => {
@@ -29,7 +28,6 @@ const DataTable: FC<IDataTable> = ({ columns, keyColumn, title, data, totalItems
       })();
    }, [data]);
    const onPageChange = (event: unknown, newPage: number) => {
-      console.log('test');
       setPage(newPage);
    };
 
@@ -56,11 +54,7 @@ const DataTable: FC<IDataTable> = ({ columns, keyColumn, title, data, totalItems
                            <TableRow key={rowData[keyColumn]}>
                               {columns.map(({ id }: ColumnConfig) => {
                                  return (
-                                    <TableCell
-                                       className="dataTableCell"
-                                       key={id}
-                                       style={{ color: 'green' }}
-                                    >
+                                    <TableCell className="dataTableCell" key={id}>
                                        {rowData[id]}
                                     </TableCell>
                                  );

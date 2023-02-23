@@ -14,6 +14,8 @@ import {
    OutlinedInput,
    InputAdornment,
    Button,
+   SelectChangeEvent,
+   TextField,
 } from '@mui/material';
 import { DefaultEventsMap } from '@socket.io/component-emitter';
 
@@ -85,19 +87,9 @@ const Transactions = () => {
 
    useEffect(() => {
       socket.on('transaction.created', (message) => {
-         console.log(message)
-         setTransactions((previousState: any) => {
-            return {
-               ...previousState,
-               ...[message]
-            };
-         });
+         setTransactions((previousState: any) => [message, ...previousState]);
       });
    }, []);
-
-   useEffect(() => {
-      console.log(currencyFrom);
-   }, [currencyFrom]);
 
    const handleOnChange = async () => {
       try {
@@ -109,9 +101,23 @@ const Transactions = () => {
             amount2: amountToValue,
             type: 'EXCHANGED',
          });
-      }catch (e){
-         console.log(e)
+         if (response.status === 201) {
+            setCurrencyFrom('');
+            setAmountFromValue('');
+            setAmountToValue('');
+         }
+         console.log(response);
+      } catch (e) {
+         console.log(e);
       }
+   };
+
+   const handleCurrencyFromOnChange = (e: SelectChangeEvent<string>) => {
+      setCurrencyFrom(e.target.value);
+      const result = transactions?.filter((transaction: any) => {
+         return transaction.type === 'LIVE_PRICE' && transaction.currencyFrom === e.target.value;
+      })[0];
+      setAmountToValue(result.amount2.toString());
    };
 
    return (
@@ -123,7 +129,7 @@ const Transactions = () => {
                      <Typography>Currency From</Typography>
                      <Select
                         value={currencyFrom}
-                        onChange={(e) => setCurrencyFrom(e.target.value)}
+                        onChange={(e) => handleCurrencyFromOnChange(e)}
                         displayEmpty
                         inputProps={{ 'aria-label': 'Without label' }}
                      >
@@ -138,9 +144,14 @@ const Transactions = () => {
                      <Grid container spacing={2}>
                         <Grid item xs={12} sm={9}>
                            <Typography>Amount</Typography>
-                           <OutlinedInput
-                              id="outlined-adornment-amount"
-                              onChange={(e) => setAmountFromValue(e.target.value)}
+                           <TextField
+                              value={amountFromValue}
+                              onChange={(e) => {
+                                 setAmountFromValue(e.target.value);
+                                 setAmountToValue((prevState: any) =>
+                                    (parseFloat(prevState) * parseFloat(e.target.value)).toString()
+                                 );
+                              }}
                            />
                         </Grid>
                         <Grid item xs={12} sm={3} sx={{ mt: 5 }}>
@@ -164,8 +175,10 @@ const Transactions = () => {
                      <Typography>Amount</Typography>
                      <OutlinedInput
                         id="outlined-adornment-amount"
+                        value={amountToValue}
                         startAdornment={<InputAdornment position="start">$</InputAdornment>}
                         onChange={(e) => setAmountToValue(e.target.value)}
+                        disabled={true}
                      />
                   </FormControl>
                   <FormControl sx={{ maxWidth: 150, mt: 4 }}>

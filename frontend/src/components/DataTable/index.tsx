@@ -52,10 +52,14 @@ const DataTable: FC<IDataTable> = ({ columns, keyColumn, title, data, totalItems
                      displayData.map((rowData: any) => {
                         return (
                            <TableRow key={rowData[keyColumn]}>
-                              {columns.map(({ id }: ColumnConfig) => {
+                              {columns.map(({ id, format, styles }: ColumnConfig) => {
                                  return (
-                                    <TableCell className="dataTableCell" key={id}>
-                                       {rowData[id]}
+                                    <TableCell
+                                       className="dataTableCell"
+                                       key={id}
+                                       style={styles && styles(rowData[id])}
+                                    >
+                                       {format ? format(rowData[id]) : rowData[id]}
                                     </TableCell>
                                  );
                               })}

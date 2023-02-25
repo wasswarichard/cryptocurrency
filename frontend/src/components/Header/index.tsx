@@ -6,7 +6,7 @@ export interface IHeaderProps {}
 
 const Header: FC<IHeaderProps> = () => {
    return (
-      <AppBar position="relative" className="appBar">
+      <AppBar className="appBar">
          <Grid container className="headerContainer">
             <Grid item xs={12}>
                <Typography variant="h4" data-testid="company-logo">

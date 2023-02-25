@@ -112,7 +112,6 @@ const Transactions = () => {
    const [transactions, setTransactions] = useState<any>([]);
    const [page, setPage] = useState(1);
    const [totalPages, setTotalPages] = useState<number>(1);
-   const [submitError, setSubmitError] = useState(false);
    const [submitSuccess, setSubmitSuccess] = useState(false);
 
    const formik = useFormik({
@@ -137,7 +136,7 @@ const Transactions = () => {
             amount2: values.amountToValue,
             type: 'EXCHANGED',
          });
-         if (response.status !== 201) setSubmitError(true);
+         if (response.status !== 201) console.log(response);
          setSubmitSuccess(true);
       },
    });
@@ -180,10 +179,10 @@ const Transactions = () => {
 
    return (
       <React.Fragment>
-         <Grid container sx={{ mt: 3 }} className="display">
+         <Grid container className="display">
             <Grid item xs={12} sm={9}>
                <form onSubmit={formik.handleSubmit} className="inputs">
-                  <FormControl sx={{ maxWidth: 200, minWidth: 200 }}>
+                  <FormControl sx={{ maxWidth: 200, minWidth: 200 }} size="small">
                      <Typography>Currency From</Typography>
                      <Select
                         id="currencyFrom"
@@ -219,6 +218,7 @@ const Transactions = () => {
                               name="amountFromValue"
                               value={formik.values.amountFromValue}
                               onBlur={formik.handleBlur}
+                              size="small"
                               error={
                                  formik.touched.amountFromValue &&
                                  Boolean(formik.errors.amountFromValue)
@@ -238,12 +238,12 @@ const Transactions = () => {
                               }}
                            />
                         </Grid>
-                        <Grid item xs={12} sm={3} sx={{ mt: 5 }}>
+                        <Grid item xs={12} sm={3} sx={{ mt: 4 }}>
                            <DragHandleSharpIcon />
                         </Grid>
                      </Grid>
                   </FormControl>
-                  <FormControl sx={{ maxWidth: 200, minWidth: 200 }}>
+                  <FormControl sx={{ maxWidth: 200, minWidth: 200 }} size="small">
                      <Typography>Currency To</Typography>
                      <Select
                         id="currencyTo"
@@ -278,7 +278,7 @@ const Transactions = () => {
                         ))}
                      </Select>
                   </FormControl>
-                  <FormControl sx={{ maxWidth: 200, minWidth: 200 }}>
+                  <FormControl sx={{ maxWidth: 200, minWidth: 200 }} size="small">
                      <Typography>Amount</Typography>
                      <OutlinedInput
                         startAdornment={<InputAdornment position="start">$</InputAdornment>}
@@ -289,8 +289,13 @@ const Transactions = () => {
                         disabled={true}
                      />
                   </FormControl>
-                  <FormControl sx={{ maxWidth: 150, mt: 4 }}>
-                     <Button color="primary" variant="contained" fullWidth type="submit">
+                  <FormControl sx={{ maxWidth: 150, mt: 3 }}>
+                     <Button
+                        variant="contained"
+                        fullWidth
+                        type="submit"
+                        style={{ backgroundColor: 'green' }}
+                     >
                         Save
                      </Button>
                   </FormControl>

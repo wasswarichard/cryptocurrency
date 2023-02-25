@@ -78,8 +78,8 @@ const DataTable: FC<IDataTable> = ({
          <Grid item xs={12} className="dataTableTitle">
             <Typography style={{ fontWeight: 'bold' }}> {title}</Typography>
          </Grid>
-         <Grid item xs={12} className="inputs">
-            <FormControl sx={{ maxWidth: 150, minWidth: 150, maxHeight: 2 }}>
+         <Grid item xs={12} className="filters">
+            <FormControl sx={{ maxWidth: 150, minWidth: 150 }} size="small">
                <Typography>From date</Typography>
                <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
@@ -87,26 +87,26 @@ const DataTable: FC<IDataTable> = ({
                      value={fromDate}
                      onChange={(e: React.SetStateAction<any>) => setFromDate(e)}
                      renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => (
-                        <TextField {...params} />
+                        <TextField {...params} size="small" />
                      )}
                   />
                </LocalizationProvider>
             </FormControl>
-            <FormControl sx={{ maxWidth: 200, minWidth: 200 }}>
+            <FormControl sx={{ maxWidth: 150, minWidth: 150 }} size="small">
                <Typography>To date</Typography>
-               <LocalizationProvider dateAdapter={AdapterDayjs}>
+               <LocalizationProvider dateAdapter={AdapterDayjs} size="small">
                   <DatePicker
                      inputFormat="MM/DD/YYYY"
                      value={toDate}
                      minDate={dayjs(fromDate)}
                      onChange={(e: React.SetStateAction<any>) => setToDate(e)}
                      renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => (
-                        <TextField {...params} />
+                        <TextField {...params} size="small" />
                      )}
                   />
                </LocalizationProvider>
             </FormControl>
-            <FormControl sx={{ maxWidth: 200, minWidth: 200 }}>
+            <FormControl sx={{ maxWidth: 150, minWidth: 150 }} size="small">
                <Typography>Type</Typography>
                <Select
                   value={type}
@@ -120,18 +120,22 @@ const DataTable: FC<IDataTable> = ({
                   ))}
                </Select>
             </FormControl>
-            <FormControl sx={{ maxWidth: 200, mt: 4 }}>
-               <Button variant="outlined" size="medium" color="info" onClick={filterTransactions}>
+            <FormControl sx={{ maxWidth: 150, mt: 3 }}>
+               <Button fullWidth variant="outlined" color="info" onClick={filterTransactions}>
                   Filter
                </Button>
             </FormControl>
          </Grid>
-         <Grid item xs={12} className="dataTableContainer">
+         <Grid item xs={12} className="dataTableContainer" sx={{ mt: 3 }}>
             <Table stickyHeader>
                <TableHead>
                   <TableRow>
                      {columns.map(({ id, label }: ColumnConfig) => (
-                        <TableCell key={id} className="dataTableHeadCell">
+                        <TableCell
+                           key={id}
+                           className="dataTableHeadCell"
+                           style={{ backgroundColor: 'lightgrey' }}
+                        >
                            <strong>{label}</strong>
                         </TableCell>
                      ))}
@@ -139,9 +143,16 @@ const DataTable: FC<IDataTable> = ({
                </TableHead>
                <TableBody>
                   {displayData.length > 0 &&
-                     displayData.map((rowData: any) => {
+                     displayData.map((rowData: any, index: number) => {
                         return (
-                           <TableRow key={rowData[keyColumn]}>
+                           <TableRow
+                              key={rowData[keyColumn]}
+                              style={
+                                 index % 2
+                                    ? { backgroundColor: 'lightgrey' }
+                                    : { backgroundColor: 'white' }
+                              }
+                           >
                               {columns.map(({ id, format, styles }: ColumnConfig) => {
                                  return (
                                     <TableCell
@@ -159,7 +170,7 @@ const DataTable: FC<IDataTable> = ({
                </TableBody>
             </Table>
          </Grid>
-         <Grid item xs={3}>
+         <Grid item xs={12} sm={3}>
             <TablePagination
                pages={totalItems}
                page={page}

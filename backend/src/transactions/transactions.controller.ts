@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 
 @Controller('transactions')
@@ -25,7 +25,18 @@ export class TransactionsController {
   }
 
   @Get()
-  async getAllTransactions() {
-    return await this.transactionsService.getTransactions();
+  async getAllTransactions(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ) {
+    return await this.transactionsService.getTransactions(page, limit);
+  }
+
+  @Get('/rate')
+  async getTransaction(
+    @Query('currencyFrom') currencyFrom: string,
+    @Query('type') type: string,
+  ) {
+    return await this.transactionsService.findTransaction(currencyFrom, type);
   }
 }

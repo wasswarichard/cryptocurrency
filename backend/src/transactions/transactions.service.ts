@@ -34,21 +34,26 @@ export class TransactionsService {
     return result.id as string;
   }
 
-  async getTransactions() {
-    const result = await this.transactionModel.find().exec();
-    return result.sort(function (a, b) {
-      return parseFloat(b.transactionDate) - parseFloat(a.transactionDate);
-    });
+  async getTransactions(page: number, limit: number) {
+    const result = await this.transactionModel
+      .find()
+      .sort({ _id: -1 })
+      .limit(limit)
+      .skip((page - 1) * limit);
+    const count = await this.transactionModel.count();
+    return {
+      totalTransactions: count,
+      totalPages: Math.round(count / limit),
+      transactions: result,
+    };
   }
 
-  async getSingleTransaction(transactionId: string) {
-    return await this.findTransaction(transactionId);
-  }
-
-  private async findTransaction(id: string): Promise<Transaction> {
+  async findTransaction(currencyFrom: string, type: string) {
     let transaction;
     try {
-      transaction = await this.transactionModel.findById(id).exec();
+      transaction = await this.transactionModel
+        .findOne({ currencyFrom, type })
+        .sort({ _id: -1 });
     } catch (e) {
       throw new NotFoundException('Could not find transaction.');
     }

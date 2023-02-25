@@ -4,21 +4,20 @@ import './index.sass';
 const defaultButton = (props: any) => <button {...props}>{props.children}</button>;
 
 const TablePagination = (props: any) => {
+   const activePage = props.page;
    const [visiblePages, setVisiblePages] = useState([]);
 
    useEffect(() => {
       setVisiblePages(getVisiblePages(null, props.pages));
    }, [props.pages]);
 
-   const changePage = (page: any) => {
-      const activePage = props.page + 1;
-      if (page === activePage) {
+   const changePage = (page: number) => {
+      if (page === props.page) {
          return;
       }
       const newVisiblePages = getVisiblePages(page, props.pages);
       setVisiblePages(filterPages(newVisiblePages, props.pages));
-
-      props.onPageChange(page - 1);
+      props.onPageChange(page);
    };
 
    const filterPages = (visiblePages: any, totalPages: any) => {
@@ -40,7 +39,6 @@ const TablePagination = (props: any) => {
    };
 
    const { PageButtonComponent = defaultButton } = props;
-   const activePage = props.page + 1;
 
    return (
       <div className="Table__pagination">

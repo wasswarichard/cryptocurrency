@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import { useTheme } from '../../frontend/src/utils/theme';
-import { Layout } from '../../frontend/src/components';
+import {Layout} from "./components";
+import {useTheme} from "./utils/theme";
 import RoutePaths from './Routes';
 
 function App() {

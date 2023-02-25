@@ -1,5 +1,9 @@
 import 'dotenv-defaults/config';
-const mandatoryEnvironmentVariables = ['BACKEND_URL', 'DATABASE_URL'];
+const mandatoryEnvironmentVariables = [
+  'BACKEND_URL',
+  'BACKEND_URL_ACCESS_KEY',
+  'DATABASE_URL',
+];
 const missingEnvironmentVariables = mandatoryEnvironmentVariables.filter(
   (variable) => !process.env[variable],
 );

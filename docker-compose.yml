@@ -5,9 +5,6 @@ services:
     depends_on:
       - api
     tty: true
-    volumes:
-      - ./frontend/:/frontend
-      - frontend/node_modules
     ports:
       - "3000:3000"
   api:
@@ -15,9 +12,6 @@ services:
     depends_on:
       - database
     tty: true
-    volumes:
-      - ./backend/:/backend
-      - /backend/node_modules
     ports:
       - "3001:3001"
     environment:

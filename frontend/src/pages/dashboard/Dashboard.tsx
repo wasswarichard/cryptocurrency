@@ -11,7 +11,7 @@ import BitcoinLogo from '../../images/bitcoin.png';
 import EthereumLogo from '../../images/ethereum.png';
 import RippleLogo from '../../images/ripple.png';
 import USALog from '../../images/usa.png';
-import './Transactions.sass';
+import './Dashboard.sass';
 import {
    Grid,
    MenuItem,
@@ -109,7 +109,7 @@ type currencyOption = {
 const backendUrl = `${process.env.REACT_APP_BACKEND_URL}`;
 let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 
-const Transactions = () => {
+const Dashboard = () => {
    const [transactions, setTransactions] = useState<any>([]);
    const [page, setPage] = useState(1);
    const [totalPages, setTotalPages] = useState<number>(1);
@@ -334,4 +334,4 @@ const Transactions = () => {
    );
 };
 
-export default Transactions;
+export default Dashboard;

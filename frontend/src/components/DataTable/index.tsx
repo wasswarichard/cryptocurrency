@@ -21,7 +21,7 @@ import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { currencyOptions } from '../../pages/Transactions/Transactions';
+import { currencyOptions } from '../../pages/dashboard/Dashboard';
 
 interface IDataTable {
    page: number;

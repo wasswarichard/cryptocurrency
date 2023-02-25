@@ -17,7 +17,7 @@ import './index.sass';
 import { ColumnConfig } from '../../interface/types';
 import React, { FC, useState, useEffect } from 'react';
 import { TablePagination } from '../../components';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -53,18 +53,21 @@ const DataTable: FC<IDataTable> = ({
    }, [data]);
 
    const filterTransactions = () => {
+      let transactions;
       const fromDateTime = new Date(dayjs(fromDate).format('LLLL')).getTime();
       const toDateTime = new Date(dayjs(toDate).format('LLLL')).getTime();
       const result = data.filter((transaction: any) => {
-         const expression = type !== 'ALL' && transaction.currencyFrom === type;
          return (
             parseInt(transaction.transactionDate) >= parseInt(String(fromDateTime)) &&
-            parseInt(transaction.transactionDate) <= parseInt(String(toDateTime)) &&
-            expression
+            parseInt(transaction.transactionDate) <= parseInt(String(toDateTime))
          );
       });
-      setDisplayData(result);
-      console.log(result);
+      if (type !== 'ALL') {
+         transactions = result.filter((transaction) => transaction.currencyFrom === type);
+      } else {
+         transactions = result;
+      }
+      setDisplayData(transactions);
    };
    const onPageChange = (newPage: number) => {
       setPage(newPage);

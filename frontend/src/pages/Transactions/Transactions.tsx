@@ -23,8 +23,14 @@ import {
    Button,
    SelectChangeEvent,
    TextField,
+   Snackbar,
 } from '@mui/material';
 import { DefaultEventsMap } from '@socket.io/component-emitter';
+
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
+   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export const currencyOptions: readonly currencyOption[] = [
    {
@@ -165,6 +171,13 @@ const Transactions = () => {
       await formik.setFieldValue('amountToValue', data.amount2.toString());
    };
 
+   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+      if (reason === 'clickaway') {
+         return;
+      }
+      setSubmitSuccess(false);
+   };
+
    return (
       <React.Fragment>
          <Grid container sx={{ mt: 3 }} className="display">
@@ -295,6 +308,19 @@ const Transactions = () => {
                />
             </Grid>
          </Grid>
+         <Snackbar
+            open={submitSuccess}
+            autoHideDuration={6000}
+            onClose={handleClose}
+            anchorOrigin={{
+               vertical: 'top',
+               horizontal: 'center',
+            }}
+         >
+            <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+               Exchange submitted
+            </Alert>
+         </Snackbar>
       </React.Fragment>
    );
 };

@@ -4,15 +4,22 @@ FROM node:18
 # Create app directory
 WORKDIR /usr/src/app
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY package*.json ./
+# Copy dependency definitions
+COPY package.json /usr/src/app
+COPY package-lock.json /usr/src/app
 
-# Install app dependencies
-RUN npm install
+# Install dependecies
+#RUN npm set progress=false \
+#    && npm config set depth 0 \
+#    && npm i install
+RUN npm ci
 
-# Bundle app source
-COPY . .
+# Get all the code needed to run the app
+COPY . /usr/src/app
 
-# Start the server using the production build
-CMD [ "npm", "start" ]
+# Expose the port the app runs in
+EXPOSE 3000
+
+# Serve the app
+CMD ["npm", "start"]
 

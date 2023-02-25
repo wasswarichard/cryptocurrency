@@ -1,8 +1,18 @@
-FROM node:14-alpine
+# Base image
+FROM node:18
 
-WORKDIR /frontend
+# Create app directory
+WORKDIR /usr/src/app
 
-COPY package.json package-lock.json ./
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+
+# Install app dependencies
 RUN npm install
 
-CMD ["npm", "start"]
+# Bundle app source
+COPY . .
+
+# Start the server using the production build
+CMD [ "npm", "start" ]
+

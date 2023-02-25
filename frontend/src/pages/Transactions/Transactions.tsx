@@ -106,13 +106,15 @@ type currencyOption = {
    src: string;
 };
 
-const backendUrl = 'http://localhost:3001';
+const backendUrl = `${process.env.REACT_APP_BACKEND_URL}`;
 let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
+
 const Transactions = () => {
    const [transactions, setTransactions] = useState<any>([]);
    const [page, setPage] = useState(1);
    const [totalPages, setTotalPages] = useState<number>(1);
    const [submitSuccess, setSubmitSuccess] = useState(false);
+   const [exchangeRate, setExchangeRate] = useState<number>(1);
 
    const formik = useFormik({
       initialValues: {
@@ -136,8 +138,12 @@ const Transactions = () => {
             amount2: values.amountToValue,
             type: 'EXCHANGED',
          });
-         if (response.status !== 201) console.log(response);
+         if (response.status !== 201) {
+            console.log(response);
+            return;
+         }
          setSubmitSuccess(true);
+         formik.resetForm();
       },
    });
 
@@ -167,7 +173,7 @@ const Transactions = () => {
          `${backendUrl}/transactions/rate/?currencyFrom=${e.target.value}&type=LIVE_PRICE`
       );
       await formik.setFieldValue('currencyFrom', e.target.value);
-      await formik.setFieldValue('amountToValue', data.amount2.toString());
+      setExchangeRate(parseFloat(data.amount2));
    };
 
    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -190,6 +196,7 @@ const Transactions = () => {
                         value={formik.values.currencyFrom}
                         onChange={(e) => handleCurrencyFromOnChange(e)}
                         inputProps={{ 'aria-label': 'Without label' }}
+                        required={true}
                      >
                         {currencyOptions.map((option) => (
                            <MenuItem value={option.value} key={option.value}>
@@ -230,10 +237,7 @@ const Transactions = () => {
                                  formik.setFieldValue('amountFromValue', e.target.value);
                                  formik.setFieldValue(
                                     'amountToValue',
-                                    (
-                                       parseFloat(formik.values.amountToValue) *
-                                       parseFloat(e.target.value)
-                                    ).toString()
+                                    (exchangeRate * parseFloat(e.target.value)).toString()
                                  );
                               }}
                            />

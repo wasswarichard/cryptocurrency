@@ -58,7 +58,7 @@ const TablePagination = (props: any) => {
             {visiblePages.map((page, index, array) => {
                return (
                   <PageButtonComponent
-                     key={index}
+                     key={page}
                      className={
                         activePage === page
                            ? 'Table__pageButton Table__pageButton--active'

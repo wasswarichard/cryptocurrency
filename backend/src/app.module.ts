@@ -6,6 +6,8 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 
+console.log(process.env.DATABASE_URL);
+
 @Module({
   imports: [
     MongooseModule.forRoot(process.env.DATABASE_URL),
